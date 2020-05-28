@@ -1,6 +1,8 @@
 FROM ubuntu:18.04
 MAINTAINER i@imux.top
 
+ARG CV_VERSION=4.3.0
+
 RUN apt-get clean && apt-get update && apt-get install -y \
       build-essential \
       git \
@@ -26,19 +28,18 @@ RUN apt-get clean && apt-get update && apt-get install -y \
       python-pip \
       python-dev \
       ffmpeg \
+      cmake \
     && rm -rf /var/lib/apt/lists/*
 RUN pip install --upgrade pip
 
-RUN wget https://github.com/Kitware/CMake/releases/download/v3.17.0/cmake-3.17.0-Linux-x86_64.tar.gz && tar -xf cmake-3.17.0-Linux-x86_64.tar.gz && mv cmake-3.17.0-Linux-x86_64 cmake && rm cmake-3.17.0-Linux-x86_64.tar.gz
-# ADD cmake-3.16.5-Linux-x86_64.tar.gz .
 # ADD 4.2.0.zip .
-RUN wget https://github.com/opencv/opencv/archive/4.2.0.zip
+RUN wget https://github.com/opencv/opencv/archive/${CV_VERSION}.zip
 
-RUN unzip /4.2.0.zip && cd opencv-4.2.0 && mkdir -p build && cd build \
-    && /cmake/bin/cmake -DCMAKE_BUILD_TYPE=Release .. && make -j"$(nproc)" \
+RUN unzip /${CV_VERSION}.zip && cd opencv-${CV_VERSION} && mkdir -p build && cd build \
+    && /cmake/bin/cmake -DCMAKE_BUILD_TYPE=Release -DOPENCV_GENERATE_PKGCONFIG=ON .. && make -j"$(nproc)" \
     && make install
 
-RUN rm /4.2.0.zip && rm -rf /opencv-4.2.0
+RUN rm /${CV_VERSION}.zip && rm -rf /opencv-${CV_VERSION}
 
 ENV PATH="/cmake/bin/:${PATH}"
 
