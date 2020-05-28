@@ -1,4 +1,4 @@
-FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu16.04
+FROM ubuntu:18.04
 MAINTAINER i@imux.top
 
 RUN apt-get clean && apt-get update && apt-get install -y \
